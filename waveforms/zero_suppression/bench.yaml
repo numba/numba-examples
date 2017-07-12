@@ -16,3 +16,4 @@ implementations:
 #      function: gpu.py:numba_zero_suppression
 #      requires:
 #          - gpu
+baseline: numpy

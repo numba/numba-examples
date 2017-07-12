@@ -34,3 +34,20 @@ class TestDiscovery(unittest.TestCase):
 
 	def test_discovery(self):
 		bench_runner.discover_and_run_benchmarks(self.source_dir, self.tmpdir, [''])
+
+
+class TestPlotting(unittest.TestCase):
+	def setUp(self):
+		self.source_dir = os.path.dirname(__file__)
+		self.tmpdir = tempfile.mkdtemp(prefix='numba_examples_test_')
+		results_dir = os.path.join(self.tmpdir, 'results', 'waveforms', 'zero_suppression')
+		self.results_file = os.path.join(results_dir, 'results.json')
+		os.makedirs(results_dir)
+		shutil.copyfile(os.path.join(self.source_dir, 'test_results.json'), self.results_file)
+
+	def tearDown(self):
+		shutil.rmtree(self.tmpdir)
+
+	def test_plot(self):
+		bench_runner.generate_plots(self.results_file, 'test.html')
+
