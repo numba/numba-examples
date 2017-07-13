@@ -3,12 +3,13 @@ import unittest
 import tempfile
 import shutil
 
-from bench_runner import Benchmark
-import bench_runner
+from numba_bench.benchmark import Benchmark
+import numba_bench.benchmark
+import numba_bench.plotting
 
 
 class TestBenchmark(unittest.TestCase):
-	EXAMPLE_BENCHMARK = os.path.join('waveforms', 'zero_suppression')
+	EXAMPLE_BENCHMARK = os.path.join(os.path.dirname(__file__), '..', 'examples', 'waveforms', 'zero_suppression')
 
 	def test_is_benchmark_dir(self):
 		self.assertFalse(Benchmark.is_benchmark_dir('waveforms'))
@@ -33,7 +34,7 @@ class TestDiscovery(unittest.TestCase):
 		shutil.rmtree(self.tmpdir)
 
 	def test_discovery(self):
-		bench_runner.discover_and_run_benchmarks(self.source_dir, self.tmpdir, [''])
+		numba_bench.benchmark.discover_and_run_benchmarks(self.source_dir, self.tmpdir, [''])
 
 
 class TestPlotting(unittest.TestCase):
@@ -49,5 +50,5 @@ class TestPlotting(unittest.TestCase):
 		shutil.rmtree(self.tmpdir)
 
 	def test_plot(self):
-		bench_runner.generate_plots(self.results_file, 'test.html')
+		numba_bench.plotting.generate_plots(self.results_file, 'test.html')
 

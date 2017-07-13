@@ -4,6 +4,7 @@ from __future__ import absolute_import, division, print_function
 
 import sys
 import os
+import json
 
 from bokeh import plotting
 from bokeh import layouts
@@ -13,7 +14,6 @@ from bokeh.models.widgets import Div
 from pygments import highlight
 from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
-
 
 
 if sys.version_info <= (3, 0):
