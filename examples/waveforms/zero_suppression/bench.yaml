@@ -6,13 +6,15 @@ xlabel: Number of elements
 validator: impl.py:validator
 implementations:
     - name: numpy
-      description: Basic NumPy implementations
+      description: Basic NumPy implementation
       function: impl.py:numpy_zero_suppression
     - name: numba_single_thread_ufunc
-      description: Numba CPU implementation
+      description: Numba single threaded ufunc
       function: impl.py:numba_zero_suppression
     - name: numba_gpu_ufunc
-      description: Numba GPU implementation
+      description: |
+          Numba GPU ufunc.  Note this will be slower than CPU!
+          There is not enough work for the GPU to do, so the fixed overhead dominates.
       function: gpu.py:numba_zero_suppression
       requires:
           - gpu

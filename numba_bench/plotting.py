@@ -10,7 +10,7 @@ from collections import defaultdict
 from bokeh import plotting
 from bokeh import layouts
 from bokeh.models import HoverTool, PrintfTickFormatter, Panel, Tabs, Legend
-from bokeh.models.widgets import Div
+from bokeh.models.widgets import Div, Paragraph
 from bokeh.embed import file_html
 from bokeh.resources import CDN
 
@@ -106,9 +106,13 @@ def generate_plots(results_filename, plot_filename):
     for impl in results['implementations']:
         # FIXME: Once we switch to Jinja2, put CSS classes back
         highlighted = highlight(impl['source'], PythonLexer(), HtmlFormatter(noclasses=True))
-        source_tabs.append((impl['name'], Div(text=highlighted, width=WIDTH)))
+        source_tabs.append(
+            (impl['name'], 
+             Paragraph(text=impl['description'], width=WIDTH),
+             Div(text=highlighted, width=WIDTH))
+        )
 
-    tabs = Tabs(tabs=[Panel(child=st[1], title=st[0]) for st in source_tabs], width=WIDTH)
+    tabs = Tabs(tabs=[Panel(child=layouts.column(st[1], st[2]), title=st[0]) for st in source_tabs], width=WIDTH)
     sections.append(layouts.row(tabs))
 
     # Benchmarks
