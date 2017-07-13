@@ -144,6 +144,7 @@ numba_bench -o results
 ```
 or
 ```
+conda install cudatoolkit # required for Numba GPU support
 numba_bench -o results -r gpu
 ```
 to run all the benchmarks, including the "gpu" only benchmarks.  The `results/` directory will contain an `index.html` with a list of the examples that were run, and each subdirectory will contain a `results.json` and `results.html` file containing the raw performance data and generated plot HTML, respectively.
