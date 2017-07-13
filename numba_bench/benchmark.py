@@ -65,7 +65,11 @@ class Benchmark(object):
         if path not in self.python_file_cache:
             # Load Python file
             global_dict = {}
-            execfile(path, global_dict)
+
+            with open(path) as f:
+                code = compile(f.read(), path, 'exec')
+                exec(code, global_dict)
+
             self.python_file_cache[path] = global_dict
 
         try:
