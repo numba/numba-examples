@@ -45,7 +45,7 @@ class Benchmark(object):
 
         return False
 
-    def __init__(self, benchmark_dir):
+    def __init__(self, benchmark_dir, resources):
         self.benchmark_dir = benchmark_dir
         self.benchmark_config_filename = os.path.join(benchmark_dir, BENCH_CONFIG_FILENAME)
         self.python_file_cache = {}
@@ -53,7 +53,7 @@ class Benchmark(object):
         with open(self.benchmark_config_filename, 'r') as f:
             config = yaml.load(f)
 
-        self._validate_and_normalize_config(config)
+        self._validate_and_normalize_config(config, resources)
 
     def _raise_benchmark_error(self, message):
         raise BenchmarkError(self.benchmark_dir, message)
@@ -83,16 +83,20 @@ class Benchmark(object):
         pattern = r'#### BEGIN: %s$(.*)^#### END: %s$' % (name, name)
         match = re.search(pattern, contents, re.DOTALL | re.MULTILINE)
         if match is None:
-            print('No match')
             return contents
         else:
             return match.group(1)
 
-    def _validate_and_normalize_impl(self, impl):
+    def _validate_and_normalize_impl(self, impl, resources):
         try:
             name = impl['name']
         except KeyError:
             self._raise_benchmark_error('Benchmark implementation missing "name" attribute')
+
+        # optional set of requirement flags
+        requires = set(impl.get('requires', []))
+        if not requires.issubset(resources):
+            return None
 
         # optional description
         description = impl.get('description')
@@ -106,12 +110,9 @@ class Benchmark(object):
 
         source = self._load_code_fragment(function_descriptor, name)
 
-        # optional list of requirement flags
-        requires = impl.get('requires', [])
-
         return dict(name=name, description=description, function=function, source=source, requires=requires)
 
-    def _validate_and_normalize_config(self, config):
+    def _validate_and_normalize_config(self, config, resources):
         # Benchmark name
         try:
             self.name = config['name']
@@ -149,14 +150,15 @@ class Benchmark(object):
 
         # Load implementations
         try:
-            implementations = config['implementations']
+            all_implementations = config['implementations']
         except KeyError:
             self._raise_benchmark_error('Benchmark config missing "implementations" attribute')
 
-        self.implementations = [
-            self._validate_and_normalize_impl(impl)
-            for impl in implementations
-        ]
+        self.implementations = []
+        for impl in all_implementations:
+            valid_impl = self._validate_and_normalize_impl(impl, resources)
+            if valid_impl is not None:
+                self.implementations.append(valid_impl)
 
         unique_impl_names = set()
         for impl in self.implementations:
@@ -260,7 +262,7 @@ def match_any(string, substring_list):
     return False
 
 
-def discover_and_run_benchmarks(source_prefix, destination_prefix, match_substrings, skip_existing=False):
+def discover_and_run_benchmarks(source_prefix, destination_prefix, match_substrings, skip_existing=False, resources=set()):
     for root, dirs, files in os.walk(source_prefix):
         benchmark_subdir = os.path.relpath(root, source_prefix)
         output_dir = os.path.join(destination_prefix, benchmark_subdir)
@@ -271,7 +273,7 @@ def discover_and_run_benchmarks(source_prefix, destination_prefix, match_substri
                      or not match_any(benchmark_subdir, match_substrings):
                 print('  Skipping %s' % benchmark_subdir)
             else:
-                benchmark = Benchmark(root)
+                benchmark = Benchmark(root, resources=resources)
                 results = benchmark.run_benchmark()
                 if not os.path.isdir(output_dir):
                     os.makedirs(output_dir)

@@ -23,6 +23,8 @@ def main(argv):
                         help='Only generate plots. Do not run benchmarks.')
     parser.add_argument('--run-only', action='store_true', default=False,
                         help='Only run benchmarks. Do not generate plots.')
+    parser.add_argument('-r', '--resources', type=str, default='',
+        help='comma separated list of resources like "gpu" that might be required by benchmarks')
 
 
     args = parser.parse_args(argv[1:])
@@ -36,6 +38,7 @@ def main(argv):
 
     root = os.path.abspath(args.root)
     output = os.path.abspath(args.output)
+    resources = set(args.resources.split(','))
 
     if do_benchmark:
         print('Scanning %s for benchmarks' % root)
@@ -48,7 +51,7 @@ def main(argv):
 
         print('Writing results to %s' % os.path.abspath(args.output))
 
-        discover_and_run_benchmarks(root, output, match_substrings, skip_existing=args.skip_existing)
+        discover_and_run_benchmarks(root, output, match_substrings, skip_existing=args.skip_existing, resources=resources)
 
     if do_plots:
         print('Scanning %s for results to plot' % output)

@@ -8,12 +8,12 @@ implementations:
     - name: numpy
       description: Basic NumPy implementations
       function: impl.py:numpy_zero_suppression
-    - name: numba_single_thread
+    - name: numba_single_thread_ufunc
       description: Numba CPU implementation
       function: impl.py:numba_zero_suppression
-#    - name: numba
-#      description: Numba GPU implementation
-#      function: gpu.py:numba_zero_suppression
-#      requires:
-#          - gpu
+    - name: numba_gpu_ufunc
+      description: Numba GPU implementation
+      function: gpu.py:numba_zero_suppression
+      requires:
+          - gpu
 baseline: numpy

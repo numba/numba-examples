@@ -20,18 +20,17 @@ def numpy_zero_suppression(values, threshold):
     return result
 #### END: numpy
 
-#### BEGIN: numba_single_thread
+#### BEGIN: numba_single_thread_ufunc
 import numba
 import numpy as np
 
-@numba.jit(nopython=True)
+@numba.vectorize(nopython=True)
 def numba_zero_suppression(values, threshold):
-    result = np.zeros_like(values)
-    for i in range(values.shape[0]):
-        if np.abs(values[i]) >= threshold:
-            result[i] = values[i]
-    return result
-#### END: numba_single_thread
+    if np.abs(values) >= threshold:
+        return values
+    else:
+        return 0.0
+#### END: numba_single_thread_ufunc
 
 
 def validator(input_args, input_kwargs, impl_output):
