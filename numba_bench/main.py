@@ -7,6 +7,7 @@ import os
 import argparse
 
 from .benchmark import discover_and_run_benchmarks
+from .plotting import discover_and_make_plots
 
 def main(argv):
     parser = argparse.ArgumentParser(description='Run comparative benchmarks')
@@ -17,23 +18,42 @@ def main(argv):
     parser.add_argument('--root', type=str, default='.',
                         help='root of benchmark directories to scan')
     parser.add_argument('benchmark_patterns', metavar='BENCHMARK', type=str,
-                        nargs='*', help='match benchmark directories containing these substrings')
+                        nargs='*', help='match directories containing these substrings when running benchmarks.  Does not affect plotting.')
+    parser.add_argument('--plot-only', action='store_true', default=False,
+                        help='Only generate plots. Do not run benchmarks.')
+    parser.add_argument('--run-only', action='store_true', default=False,
+                        help='Only run benchmarks. Do not generate plots.')
+
 
     args = parser.parse_args(argv[1:])
 
-    root = os.path.abspath(args.root)
-    print('Scanning %s for benchmarks' % root)
-
-    if len(args.benchmark_patterns) == 0:
-        match_substrings = ['']  # match everything
+    if args.run_only and args.plot_only:
+        print('Error: Cannot specify --plot-only and --run-only at same time.')
+        return 1
     else:
-        match_substrings = args.benchmark_patterns
-        print('  => matching benchmark directories: ' + ', '.join(match_substrings))
+        do_benchmark = not args.plot_only
+        do_plots = not args.run_only
 
+    root = os.path.abspath(args.root)
     output = os.path.abspath(args.output)
-    print('Writing results to %s' % os.path.abspath(args.output))
 
-    discover_and_run_benchmarks(root, output, match_substrings, skip_existing=args.skip_existing)
+    if do_benchmark:
+        print('Scanning %s for benchmarks' % root)
+
+        if len(args.benchmark_patterns) == 0:
+            match_substrings = ['']  # match everything
+        else:
+            match_substrings = args.benchmark_patterns
+            print('  => matching benchmark directories: ' + ', '.join(match_substrings))
+
+        print('Writing results to %s' % os.path.abspath(args.output))
+
+        discover_and_run_benchmarks(root, output, match_substrings, skip_existing=args.skip_existing)
+
+    if do_plots:
+        print('Scanning %s for results to plot' % output)
+        discover_and_make_plots(output)
+
 
     return 0
 

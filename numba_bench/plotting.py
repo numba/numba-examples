@@ -5,16 +5,20 @@ from __future__ import absolute_import, division, print_function
 import sys
 import os
 import json
+from collections import defaultdict
 
 from bokeh import plotting
 from bokeh import layouts
 from bokeh.models import HoverTool, PrintfTickFormatter, Panel, Tabs, Legend
 from bokeh.models.widgets import Div
+from bokeh.embed import file_html
+from bokeh.resources import CDN
 
 from pygments import highlight
 from pygments.lexers import PythonLexer
 from pygments.formatters import HtmlFormatter
 
+from jinja2 import Template
 
 if sys.version_info <= (3, 0):
     range = xrange
@@ -79,6 +83,9 @@ def make_plot(results, title, xlabel, ylabel, baseline, ycolname, yaxis_format):
 
 
 def generate_plots(results_filename, plot_filename):
+    with open(os.path.join(os.path.dirname(__file__), 'plot.tmpl.html')) as f:
+        html_template = Template(f.read())
+
     with open(results_filename, 'r') as f:
         results = json.load(f)
 
@@ -87,7 +94,7 @@ def generate_plots(results_filename, plot_filename):
     baseline = results['baseline']
 
     # Make plot
-    plotting.output_file(plot_filename)
+    #plotting.output_file(plot_filename)
 
     sections = [
         layouts.row(Div(text='''<h1>Example: %(name)s</h1>
@@ -132,4 +139,35 @@ def generate_plots(results_filename, plot_filename):
         ], width=WIDTH)
         sections.append(layouts.row(tabs))
 
-    plotting.save(layouts.column(sections))
+    html = file_html(layouts.column(sections), 
+        resources=CDN,
+        title='Example: %s' % results['name'],
+        template=html_template)
+
+    with open(plot_filename, 'w') as f:
+        f.write(html)
+
+    return results
+
+
+def discover_and_make_plots(destination_prefix):
+    with open(os.path.join(os.path.dirname(__file__), 'index.tmpl.html')) as f:
+        index_template = Template(f.read())
+
+    benchmark_pages = defaultdict(list)
+
+    index_page = os.path.join(destination_prefix, 'index.html')
+
+    for root, dirs, files in os.walk(destination_prefix):
+        output_subdir = os.path.relpath(root, destination_prefix)
+        results_filename = os.path.join(root, 'results.json')
+        plot_filename = os.path.join(root, 'results.html')
+
+        if os.path.exists(results_filename):
+            print('  Found: %s' % results_filename)
+            results = generate_plots(results_filename, plot_filename)
+            benchmark_pages[os.path.dirname(output_subdir)].append(dict(name=results['name'], path=os.path.join(output_subdir, 'results.html')))
+
+    # Generate index page
+    with open(index_page, 'w') as f:
+        f.write(index_template.render(sections=benchmark_pages))
