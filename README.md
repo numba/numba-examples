@@ -158,6 +158,6 @@ There are additional options to `numba_bench` that can be useful:
   
 In addition, substrings can be listed on the command line that will limit which tests will run.  For example, this command:
 ```
-numba_bench -r results waveform pdf
+numba_bench -o results waveform pdf
 ```
 will run any test under the benchmark tree with a directory that contains `waveform` or `pdf` in the name.
