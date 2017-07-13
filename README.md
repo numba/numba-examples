@@ -1,8 +1,8 @@
 # Numba Examples
 
-This repository contains examples of using [https://numba.pydata.org](Numba)
+This repository contains examples of using [Numba](https://numba.pydata.org)
 to implement various algorithms.  If you want to browse the examples and
-performance results, head over to the [https://numba.pydata.org/numba-examples/index.html](examples site).
+performance results, head over to the [examples site](https://numba.pydata.org/numba-examples/index.html).
 
 In the repository is a benchmark runner (called `numba_bench`) that walks a directory tree of benchmarks, executes them, saves the results in JSON format, then generates HTML pages with pretty-printed source code and performance plots.
 
