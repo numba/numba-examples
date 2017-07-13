@@ -17,11 +17,11 @@ class TestBenchmark(unittest.TestCase):
 
 	def test_init_validate_and_normalize(self):
 		# No exceptions raised
-		benchmark = Benchmark(self.EXAMPLE_BENCHMARK)
+		benchmark = Benchmark(self.EXAMPLE_BENCHMARK, resources=set())
 
 	def test_run_benchmark(self):
 		# No exceptions raised
-		benchmark = Benchmark(self.EXAMPLE_BENCHMARK)
+		benchmark = Benchmark(self.EXAMPLE_BENCHMARK, resources=set())
 		results = benchmark.run_benchmark()
 
 
