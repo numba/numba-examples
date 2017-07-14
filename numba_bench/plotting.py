@@ -20,6 +20,10 @@ from pygments.formatters import HtmlFormatter
 
 from jinja2 import Template
 
+import mistune
+
+markdown = mistune.Markdown()
+
 if sys.version_info <= (3, 0):
     range = xrange
 
@@ -93,12 +97,10 @@ def generate_plots(results_filename, plot_filename):
     xlabel = results['xlabel']
     baseline = results['baseline']
 
-    # Make plot
-    #plotting.output_file(plot_filename)
-
     sections = [
-        layouts.row(Div(text='''<h1>Example: %(name)s</h1>
-            <p><b>Description</b>: %(description)s</p>''' % results, width=WIDTH)),
+        layouts.row(Div(text='''<h1>Example: %s</h1>
+            <p><b>Description</b>: %s</p>''' % \
+                (results['name'], markdown.render(results['description'])), width=WIDTH)),
     ]
     # Implementations
     sections.append(layouts.row(Div(text='<h2>Implementations</h2>', width=WIDTH)))
@@ -108,7 +110,7 @@ def generate_plots(results_filename, plot_filename):
         highlighted = highlight(impl['source'], PythonLexer(), HtmlFormatter(noclasses=True))
         source_tabs.append(
             (impl['name'], 
-             Paragraph(text=impl['description'], width=WIDTH),
+             Div(text=markdown.render(impl['description']), width=WIDTH),
              Div(text=highlighted, width=WIDTH))
         )
 

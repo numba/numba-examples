@@ -13,8 +13,11 @@ implementations:
       function: impl.py:numba_zero_suppression
     - name: numba_gpu_ufunc
       description: |
-          Numba GPU ufunc.  Note this will be slower than CPU!
-          There is not enough work for the GPU to do, so the fixed overhead dominates.
+          Numba GPU ufunc.  Learn more about the CUDA target for vectorize at
+          http://numba.pydata.org/numba-doc/latest/cuda/ufunc.html
+          (**NOTE**: This particular implementation will be slower than CPU
+          because there is not enough work for the GPU to overcome the fixed
+          overhead of launching a kernel.)
       function: gpu.py:numba_zero_suppression
       requires:
           - gpu

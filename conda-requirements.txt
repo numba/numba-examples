@@ -4,3 +4,4 @@ bokeh
 pygments
 jinja2
 pyyaml
+mistune

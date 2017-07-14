@@ -44,7 +44,7 @@ baseline: numpy
 The top-level keys are:
 
   * `name`: A short name for the example.  Used in plot titles, page titles, etc.  Keep it short.
-  * `description`: A multiline description of the example.  This is put at the top of the example page.
+  * `description`: A Markdown description of the example.  This can be multiple lines and is put at the top of the example page.
   * `input_generator`: Python function to call to generate input data.  Format is `filename:function_name`.
   * `validator`: Python function to verify that output is correct.  (You don't want to benchmark a function that gives wrong answers!)
   * `implementations`: A list of implementations to test.  Being able to compare multiple implementations is important to see whether Numba is providing any benefit.  Different implementations also have different scaling characteristics, which is helpful to compare.
@@ -53,7 +53,7 @@ The top-level keys are:
 Each implementation also defines:
 
   * `name`: Short name of implementation.  Used in legends, tabs, and other places.
-  * `description`: Longer description of implementation.  Can be multi-line.
+  * `description`: Longer Markdown description of implementation.  Can be multi-line.
   * `function`: Python function with implementation.  Note that multiple implementations can be in the same file, or they can be in different files.
   * `requires`: A list of strings indicating resources that are required to run this benchmark.  If the benchmark runner is not told (with a command line option) that it has the required resources for an implementation, that implementation will be skipped.
   
