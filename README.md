@@ -101,7 +101,9 @@ As the comment notes, we are treating the NumPy implementation as the reference,
 
 ### Marking Implementation Source Code
 
-The output HTML from running the benchmark includes the source code of the implementation.  Since the implementation might depend on imports and helper functions, by default the benchmark runner will snapshot *the entire Python file* containing the main implementation function for the HTML output.
+The output HTML from running the benchmark includes the source code of the implementation.  Code formatting is done with [pygments](http://pygments.org/), and the terms `NOTE` and `SPEEDTIP` in the comments are highlighted to stand out.
+
+Since the implementation might depend on imports and helper functions, by default the benchmark runner will snapshot *the entire Python file* containing the main implementation function for the HTML output.
 
 For short benchmarks, it might be more convenient to put more than one implementation into the same file.  In that case, special comments can be used to tell the runner what section of code to capture.  For example, in this file:
 ``` python

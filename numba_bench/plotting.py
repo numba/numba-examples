@@ -106,8 +106,9 @@ def generate_plots(results_filename, plot_filename):
     sections.append(layouts.row(Div(text='<h2>Implementations</h2>', width=WIDTH)))
     source_tabs = []
     for impl in results['implementations']:
-        # FIXME: Once we switch to Jinja2, put CSS classes back
-        highlighted = highlight(impl['source'], PythonLexer(), HtmlFormatter(noclasses=True))
+        lexer = PythonLexer()
+        lexer.add_filter('codetagify', codetags=['NOTE', 'SPEEDTIP'])
+        highlighted = highlight(impl['source'], lexer, HtmlFormatter())
         source_tabs.append(
             (impl['name'], 
              Div(text=markdown.render(impl['description']), width=WIDTH),
@@ -148,7 +149,8 @@ def generate_plots(results_filename, plot_filename):
     html = file_html(layouts.column(sections), 
         resources=CDN,
         title='Example: %s' % results['name'],
-        template=html_template)
+        template=html_template,
+        template_variables=dict(pygments_css=HtmlFormatter().get_style_defs('.highlight')))
 
     with open(plot_filename, 'w') as f:
         f.write(html)
