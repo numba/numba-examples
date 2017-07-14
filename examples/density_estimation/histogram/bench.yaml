@@ -1,0 +1,21 @@
+name: Histogram
+description: |
+    Compute a 1D histogram over elements from an input array.  Note that these
+    Numba implementations do not cover all the options that numpy.histogram allows.
+input_generator: impl.py:input_generator
+xlabel: Number of input elements
+validator: impl.py:validator
+implementations:
+    - name: numpy
+      description: Numpy function
+      function: impl.py:numpy_histogram
+    - name: numba
+      description: Numba single threaded
+      function: impl.py:numba_histogram
+    - name: numba_gpu
+      description: |
+          Numba-compiled CUDA kernel.
+      function: gpu.py:numba_gpu_histogram
+      requires:
+          - gpu
+baseline: numpy
