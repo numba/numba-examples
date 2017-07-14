@@ -202,7 +202,7 @@ class Benchmark(object):
         for index in range(0, 10):
             number = 10 ** index
             duration = self._timeit(number, input_dict, impl_dict)
-            if duration >= 0.2:
+            if duration >= 0.1:
                 break
 
         times_per_call = []
