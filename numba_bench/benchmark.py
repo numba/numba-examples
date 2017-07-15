@@ -211,9 +211,13 @@ class Benchmark(object):
 
         return reps, number, times_per_call
 
-    def run_benchmark(self, quiet=False):
+    def run_benchmark(self, quiet=False, verify_only=False):
         if not quiet:
-            print('\n  Running %s [%s]' % (self.name, self.benchmark_dir))
+            if verify_only:
+                verb = 'Verifying'
+            else:
+                verb = 'Running'
+            print('\n  %s %s [%s]' % (verb, self.name, self.benchmark_dir))
 
         x = [] # x-axis value
         # timing_resuls[category][impl_name] = dict(x, times)
@@ -223,14 +227,18 @@ class Benchmark(object):
                 category_str = ', '.join(input_dict['category'])
                 print('    %s: %s - %s' % (impl_dict['name'], category_str, input_dict['x']), end='')
                 self._run_and_validate_results(input_dict, impl_dict)
-                reps, iter_per_rep, times_per_call = self._timeit_autoscale (input_dict, impl_dict)
+
+                if verify_only:
+                    print(' => passed')
+                else:
+                    reps, iter_per_rep, times_per_call = self._timeit_autoscale (input_dict, impl_dict)
 
 
-                best_time = min(times_per_call)
-                print(' => %d reps, %d iter per rep, %f usec per call' % (reps, iter_per_rep, best_time*1e6))
+                    best_time = min(times_per_call)
+                    print(' => %d reps, %d iter per rep, %f usec per call' % (reps, iter_per_rep, best_time*1e6))
 
-                timing_results[input_dict['category']][impl_dict['name']]['x'].append(input_dict['x'])
-                timing_results[input_dict['category']][impl_dict['name']]['times'].append(best_time)
+                    timing_results[input_dict['category']][impl_dict['name']]['x'].append(input_dict['x'])
+                    timing_results[input_dict['category']][impl_dict['name']]['times'].append(best_time)
 
         return timing_results
 
@@ -266,7 +274,8 @@ def match_any(string, substring_list):
     return False
 
 
-def discover_and_run_benchmarks(source_prefix, destination_prefix, match_substrings, skip_existing=False, resources=set()):
+def discover_and_run_benchmarks(source_prefix, destination_prefix, match_substrings, skip_existing=False, resources=set(),
+                                verify_only=False):
     for root, dirs, files in os.walk(source_prefix):
         benchmark_subdir = os.path.relpath(root, source_prefix)
         output_dir = os.path.join(destination_prefix, benchmark_subdir)
@@ -278,8 +287,9 @@ def discover_and_run_benchmarks(source_prefix, destination_prefix, match_substri
                 print('  Skipping %s' % benchmark_subdir)
             else:
                 benchmark = Benchmark(root, resources=resources)
-                results = benchmark.run_benchmark()
-                if not os.path.isdir(output_dir):
-                    os.makedirs(output_dir)
-                print('  Writing benchmark results to:', output_filename)
-                benchmark.write_results(output_filename, results)
+                results = benchmark.run_benchmark(verify_only=verify_only)
+                if not verify_only:
+                    if not os.path.isdir(output_dir):
+                        os.makedirs(output_dir)
+                    print('  Writing benchmark results to:', output_filename)
+                    benchmark.write_results(output_filename, results)

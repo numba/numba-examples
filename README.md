@@ -6,7 +6,42 @@ performance results, head over to the [examples site](https://numba.pydata.org/n
 
 In the repository is a benchmark runner (called `numba_bench`) that walks a directory tree of benchmarks, executes them, saves the results in JSON format, then generates HTML pages with pretty-printed source code and performance plots.
 
-We are actively seeking new Numba examples!  Keep reading to learn how benchmarks are defined.
+We are actively seeking new Numba examples!  Keep reading to learn how benchmarks are run and how to make new ones.
+
+## Running Benchmarks
+
+Assuming you have this repository checked out into the current directory, you should do the following to setup your environment to run the benchmarks:
+```
+conda create -n numba_bench --file conda-requirements.txt
+source activate numba_bench
+python setup.py install
+```
+
+The most common way to run the benchmarks is like this:
+```
+numba_bench -o results
+```
+or
+```
+conda install cudatoolkit # required for Numba GPU support
+numba_bench -o results -r gpu
+```
+to run all the benchmarks, including the "gpu" only benchmarks.  The `results/` directory will contain an `index.html` with a list of the examples that were run, and each subdirectory will contain a `results.json` and `results.html` file containing the raw performance data and generated plot HTML, respectively.
+
+There are additional options to `numba_bench` that can be useful:
+
+  * `--skip-existing`: Skip any example with a `results.json` already present in the output directory.
+  * `--verify-only`: Only run the verification step for each implementation in each benchmark.  Very fast and good for debugging, but does not produce `results.json` or `results.html`.
+  * `--run-only`: Only run benchmarks, don't generate HTML output.
+  * `--plot-only`: Only generate HTML output, don't run benchmarks.
+  * `--root`: Set the root of the tree of benchmarks.  By default it is the current directory.
+  
+In addition, substrings can be listed on the command line that will limit which tests will run.  For example, this command:
+```
+numba_bench -o results waveform pdf
+```
+will run any test under the benchmark tree with a directory that contains `waveform` or `pdf` in the name.
+
 
 ## Making a benchmark
 
@@ -131,35 +166,3 @@ def numpy_zero_suppression(values, threshold):
 ```
 The implementation named `numpy` will only show the code between `#### BEGIN: numpy` and `#### END: numpy` in the HTML rendering of the example.
 
-## Running Benchmarks
-
-Assuming you have this repository checked out into the current directory, you should do the following to setup your environment to run the benchmarks:
-```
-conda create -n numba_bench --file conda-requirements.txt
-source activate numba_bench
-python setup.py install
-```
-
-The most common way to run the benchmarks is like this:
-```
-numba_bench -o results
-```
-or
-```
-conda install cudatoolkit # required for Numba GPU support
-numba_bench -o results -r gpu
-```
-to run all the benchmarks, including the "gpu" only benchmarks.  The `results/` directory will contain an `index.html` with a list of the examples that were run, and each subdirectory will contain a `results.json` and `results.html` file containing the raw performance data and generated plot HTML, respectively.
-
-There are additional options to `numba_bench` that can be useful:
-
-  * `--skip-existing`: Skip any example with a `results.json` already present in the output directory.
-  * `--run-only`: Only run benchmarks, don't generate HTML output.
-  * `--plot-only`: Only generate HTML output, don't run benchmarks.
-  * `--root`: Set the root of the tree of benchmarks.  By default it is the current directory.
-  
-In addition, substrings can be listed on the command line that will limit which tests will run.  For example, this command:
-```
-numba_bench -o results waveform pdf
-```
-will run any test under the benchmark tree with a directory that contains `waveform` or `pdf` in the name.
