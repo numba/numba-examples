@@ -50,5 +50,5 @@ class TestPlotting(unittest.TestCase):
 		shutil.rmtree(self.tmpdir)
 
 	def test_plot(self):
-		numba_bench.plotting.generate_plots(self.results_file, 'test.html')
+		numba_bench.plotting.generate_plots(self.results_file, 'test.html', 'https://github.com/numba/numba-examples/tree/master')
 

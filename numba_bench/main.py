@@ -25,6 +25,8 @@ def main(argv):
                         help='Only run benchmarks. Do not generate plots.')
     parser.add_argument('-r', '--resources', type=str, default='',
         help='comma separated list of resources like "gpu" that might be required by benchmarks')
+    parser.add_argument('--url-root', type=str, default='https://github.com/numba/numba-examples/tree/master',
+        help='Base URL on Github for benchmark source')
 
 
     args = parser.parse_args(argv[1:])
@@ -55,7 +57,7 @@ def main(argv):
 
     if do_plots:
         print('Scanning %s for results to plot' % output)
-        discover_and_make_plots(output)
+        discover_and_make_plots(output, github_urlbase=args.url_root)
 
 
     return 0

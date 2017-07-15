@@ -86,7 +86,7 @@ def make_plot(results, title, xlabel, ylabel, baseline, ycolname, yaxis_format):
     return p
 
 
-def generate_plots(results_filename, plot_filename):
+def generate_plots(results_filename, plot_filename, github_url):
     with open(os.path.join(os.path.dirname(__file__), 'plot.tmpl.html')) as f:
         html_template = Template(f.read())
 
@@ -150,7 +150,8 @@ def generate_plots(results_filename, plot_filename):
         resources=CDN,
         title='Example: %s' % results['name'],
         template=html_template,
-        template_variables=dict(pygments_css=HtmlFormatter().get_style_defs('.highlight')))
+        template_variables=dict(pygments_css=HtmlFormatter().get_style_defs('.highlight'),
+            github_url=github_url))
 
     with open(plot_filename, 'w') as f:
         f.write(html)
@@ -158,7 +159,7 @@ def generate_plots(results_filename, plot_filename):
     return results
 
 
-def discover_and_make_plots(destination_prefix):
+def discover_and_make_plots(destination_prefix, github_urlbase):
     with open(os.path.join(os.path.dirname(__file__), 'index.tmpl.html')) as f:
         index_template = Template(f.read())
 
@@ -170,10 +171,11 @@ def discover_and_make_plots(destination_prefix):
         output_subdir = os.path.relpath(root, destination_prefix)
         results_filename = os.path.join(root, 'results.json')
         plot_filename = os.path.join(root, 'results.html')
+        github_url = github_urlbase + '/' + output_subdir
 
         if os.path.exists(results_filename):
             print('  Found: %s' % results_filename)
-            results = generate_plots(results_filename, plot_filename)
+            results = generate_plots(results_filename, plot_filename, github_url=github_url)
             benchmark_pages[os.path.dirname(output_subdir)].append(dict(name=results['name'], path=os.path.join(output_subdir, 'results.html')))
 
     # Generate index page
