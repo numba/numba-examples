@@ -1,0 +1,20 @@
+name: Black-Scholes
+description: |
+    Black-Scholes
+input_generator: blackscholes.py:input_generator
+xlabel: Number of input elements
+validator: blackscholes.py:validator
+implementations:
+    - name: numpy
+      description: Numpy implementation
+      function: blackscholes.py:black_scholes
+    - name: numba
+      description: Numba implementation
+      function: blackscholes_numba.py:black_scholes_numba
+    - name: numba_gpu
+      description: |
+          Numba-compiled CUDA kernel.
+      function: blackscholes_cuda.py:black_scholes_cuda
+      requires:
+          - gpu
+baseline: numpy
