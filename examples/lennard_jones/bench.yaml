@@ -1,0 +1,28 @@
+name: Lennard Jones
+description: |
+    Compute the Lennard Jones Pontential for a random cluster of atoms
+    in 3D space of a fixed radius.  This computes sum of all energy potentials
+    of every pair of atoms in the cluster.
+
+input_generator: numpy_impl.py:input_generator
+xlabel: Number of input elements
+validator: numpy_impl.py:validator
+implementations:
+    - name: numpy
+      description: Numpy function
+      function: numpy_impl.py:potential_numpy
+    - name: numba_array
+      description: Numba function operating on mostly array.
+                   This is not a fast implementation but is the closest to
+                   the *numpy* version.
+      function: numba_array_impl.py:potential_numba_array
+    - name: numba_scalar
+      description: Numba function operating on scalar mostly.
+                   This version has the algorithm rewritten to operate on
+                   a scalar at a time in manually written loops.
+      function: numba_scalar_impl.py:potential_numba_scalar
+    - name: numba_scalar_prange
+      description: This enables the *prange* feature on *numba_scalar*.
+      function: numba_scalar_prange_impl.py:potential_numba_scalar_prange
+
+baseline: numpy
