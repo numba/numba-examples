@@ -98,8 +98,8 @@ When benchmarking an example, the runner does the following:
 
   1. All of the functions are loaded into memory by calling `execfile` on all of the Python scripts mentioned in `bench.yaml`.  No file is loaded more than once, even if multiple implementations refer to it.
   2. The input generator is called and for each input set it yields and each implementation that is defined:
-    a. The implementation is called once, and the output (along with the input) sent to the validator function to be checked.  This also triggers any JIT compilation in the implementation so it does not contribute to the time measurement.
-    b. The implementation is called many times with the same input in a loop to get a more accurate time measurement, using roughly the same automatic scaling logic as `%timeit` in Jupyter so each batch of calls takes between 0.2 and 2 seconds.  The best of three batches is recorded.
+      1. The implementation is called once, and the output (along with the input) sent to the validator function to be checked.  This also triggers any JIT compilation in the implementation so it does not contribute to the time measurement.
+      2. The implementation is called many times with the same input in a loop to get a more accurate time measurement, using roughly the same automatic scaling logic as `%timeit` in Jupyter so each batch of calls takes between 0.2 and 2 seconds.  The best of three batches is recorded.
   3. Results are grouped by category (see description of input generator below) so that one plot will be made for each unique category and each plot will contain one series per implementation.
   
 ### Input Generators
