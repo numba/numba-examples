@@ -14,10 +14,8 @@ def input_generator():
 import numpy as np
 
 def numpy_zero_suppression(values, threshold):
-    result = np.zeros_like(values)
-    selector = np.abs(values) >= threshold
-    result[selector] = values[selector]
-    return result
+    cond = np.less(np.absolute(values), threshold)
+    return np.where(cond, 0, values)
 #### END: numpy
 
 #### BEGIN: numba_single_thread_ufunc
