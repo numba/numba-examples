@@ -1,0 +1,18 @@
+name: Kernel Density Estimator
+description: |
+    Evaluate a 1D Gaussian [kernel density estimator](https://en.wikipedia.org/wiki/Kernel_density_estimation) 
+    at a list of points given a list of samples from the distribution and corresponding kernel bandwidths.
+input_generator: impl.py:input_generator
+xlabel: Number of evaluation points
+validator: impl.py:validator
+implementations:
+    - name: numpy
+      description: Numpy function
+      function: impl.py:numpy_kde
+    - name: numba
+      description: Numba single threaded
+      function: impl.py:numba_kde
+    - name: numba_multithread
+      description: Numba multi-threaded
+      function: impl.py:numba_kde_multithread
+baseline: numpy
