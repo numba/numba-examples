@@ -1,0 +1,41 @@
+package:
+  name: numba_examples
+  version: {{ GIT_DESCRIBE_TAG }}
+
+source:
+  path: ..
+
+build:
+  number: {{ GIT_DESCRIBE_NUMBER|int }}
+  script_env:
+    - LD_LIBRARY_PATH # pass cuda libs through for docker builds
+  script: python setup.py install
+    
+requirements:
+  build:
+    - python ==3.6
+    - numba
+  run:
+    - python ==3.6
+    - numba
+    - bokeh
+    - pygments
+    - jinja2
+    - pyyaml
+    - mistune
+
+test:
+  source_files:
+    - test
+    - examples
+  requires:
+    - python ==3.6
+  commands:
+    - python -m unittest test/test_bench_runner.py
+
+about:
+    home: https://github.com/numba/numba-examples
+    license: BSD
+    license_file: LICENSE
+
+summary: Examples of using Numba.
