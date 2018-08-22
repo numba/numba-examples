@@ -1,0 +1,16 @@
+name: numba-examples
+channels:
+  - defaults
+  - numba
+  - conda-forge
+
+dependencies:
+  - python=3.6
+  - numba
+  - scipy
+  - hvplot
+  - icc_rt
+  - psutil
+  - dask
+  - pip:
+    - "--editable=git+https://github.com/sklam/utiliviz.git@f87bd86afcb9da1caef79ed69a7ee3b558057084#egg=utiliviz"
