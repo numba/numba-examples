@@ -11,3 +11,4 @@ dependencies:
   - dask
   - progressbar2
   - colorama
+  - tbb
