@@ -13,3 +13,5 @@ dependencies:
   - progressbar2
   - colorama
   - tbb
+  - matplotlib
+  - imageio

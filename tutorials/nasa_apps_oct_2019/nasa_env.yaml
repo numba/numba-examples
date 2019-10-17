@@ -1,0 +1,14 @@
+name: numba_tutorial_nasa_space_apps
+channels:
+  - numba
+  - defaults
+dependencies:
+  - python=3
+  - numba
+  - colorama
+  - scipy
+  - cudatoolkit
+  - jupyter
+  - icc_rt
+  - matplotlib
+  - imageio
