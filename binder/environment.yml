@@ -15,3 +15,7 @@ dependencies:
   - tbb
   - matplotlib
   - imageio
+  - pip
+  - pip:
+    - r2pipe
+    - graphviz
