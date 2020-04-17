@@ -16,6 +16,3 @@ dependencies:
   - matplotlib
   - imageio
   - pip
-  - pip:
-    - r2pipe
-    - graphviz
