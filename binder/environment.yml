@@ -5,7 +5,7 @@ channels:
 
 dependencies:
   - python=3.8
-  - numba=0.50
+  - numba=0.51
   - numba-scipy=0.2
   - scipy
   - icc_rt
