@@ -17,4 +17,4 @@ dependencies:
   - imageio
   - pip
   - graphviz
-  - pygraphviz
+  - python-graphviz
