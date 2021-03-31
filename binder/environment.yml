@@ -4,11 +4,11 @@ channels:
   - numba
 
 dependencies:
-  - python=3.8
-  - numba=0.52
+  - python=3.9
+  - numba=0.53
   - numba-scipy=0.2
   - scipy
-  - icc_rt=2018.0.2
+  - icc_rt
   - dask
   - progressbar2
   - colorama
@@ -18,3 +18,4 @@ dependencies:
   - pip
   - graphviz
   - python-graphviz
+  - bokeh
