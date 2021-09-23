@@ -5,8 +5,8 @@ channels:
 
 dependencies:
   - python=3.9
-  - numba=0.53
-  - numba-scipy=0.2
+  - numba=0.54
+  - numba-scipy=0.3
   - scipy
   - icc_rt
   - dask
