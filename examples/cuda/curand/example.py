@@ -29,7 +29,7 @@ repetitions = 50
 @cuda.jit(link=['shim.cu'], extensions=[curand_state_arg_handler])
 def setup(states):
     i = cuda.grid(1)
-    curand_init(1234, i, 0, states[i])
+    curand_init(1234, i, 0, states, i)
 
 
 # Random sampling kernel - computes the fraction of numbers with low bits set
@@ -40,19 +40,19 @@ def count_low_bits_native(states, sample_count, results):
     i = cuda.grid(1)
     count = 0
 
-    # This thread's state
-    localState = states[i]
+    # Copy state to local memory
+    # XXX: TBC
 
     # Generate pseudo-random numbers
     for sample in range(sample_count):
-        x = curand(localState)
+        x = curand(states, i)
 
         # Check if low bit set
         if(x & 1):
             count += 1
 
     # Copy state back to global memory
-    states[i] = localState
+    # XXX: TBC
 
     # Store results
     results[i] += count

@@ -7,13 +7,9 @@
 # Numba kernels.
 
 from numba import cuda, types
-from numba.core.extending import (lower_builtin, models, register_model,
-                                  typeof_impl)
-from numba.core.typing.templates import AbstractTemplate, signature
-from numba.cuda.cudadecl import register_global
+from numba.core.extending import models, register_model, typeof_impl
 
 import numpy as np
-import operator
 
 
 # cuRAND state type as a NumPy dtype - this mirrors the state defined in
@@ -44,11 +40,7 @@ class CurandStates:
         return self._array.__cuda_array_interface__['data'][0]
 
 
-# Numba typing for cuRAND state. Generally we treat cuRAND states as a struct
-# mirroring the C/C++ struct, and an array of states is a pointer with slightly
-# special behaviour - doing a getitem on a state array returns a reference
-# (pointer) to that element, because we need to pass pointers to individual
-# elements to cuRAND functions.
+# Numba typing for cuRAND state.
 
 class CurandState(types.Type):
     def __init__(self):
@@ -92,52 +84,6 @@ class curand_state_model(models.StructModel):
 register_model(CurandStatePointer)(models.PointerModel)
 
 
-# Typing for cuRAND states:
-#
-# - getitem on a CurandStatePointer returns another CurandStatePointer.
-# - setitem on a CurandStatePointer with a CurandState copies the CurandState
-#   to the item referred to by the index.
-
-@register_global(operator.getitem)
-class GetItemCurandStatePointer(AbstractTemplate):
-    def generic(self, args, kws):
-        assert not kws
-        ptr, idx = args
-        if (isinstance(ptr, CurandStatePointer) and
-                isinstance(idx, types.Integer)):
-            i = types.intp if idx.signed else types.uintp
-            return signature(ptr, ptr, i)
-
-
-@register_global(operator.setitem)
-class SetItemCurandStatePointer(AbstractTemplate):
-    def generic(self, args, kws):
-        assert not kws
-        ptr, idx, val = args
-        if (isinstance(ptr, CurandStatePointer) and
-                isinstance(idx, types.Integer) and
-                isinstance(val, CurandStatePointer)):
-            i = types.intp if idx.signed else types.uintp
-            return signature(types.none, ptr, i, val)
-
-
-# Lowering for cuRAND states, following the rules outlined above.
-
-@lower_builtin(operator.getitem, CurandStatePointer, types.Integer)
-def getitem_curand_states(context, builder, sig, args):
-    base_ptr, idx = args
-    elem_ptr = builder.gep(base_ptr, [idx])
-    return elem_ptr
-
-
-@lower_builtin(operator.setitem, CurandStatePointer, types.Integer,
-               CurandStatePointer)
-def setitem_curand_states(context, builder, sig, args):
-    base_ptr, idx, val = args
-    elem_ptr = builder.gep(base_ptr, [idx])
-    builder.store(builder.load(val), elem_ptr)
-
-
 # Numba forward declarations of cuRAND functions. These call shim functions
 # prepended with _numba, that simply forward arguments to the named cuRAND
 # function.
@@ -146,12 +92,13 @@ curand_init_sig = types.void(
     types.uint64,
     types.uint64,
     types.uint64,
-    curand_state_pointer
+    curand_state_pointer,
+    types.uint64
 )
 
 curand_init = cuda.declare_device('_numba_curand_init', curand_init_sig)
 curand = cuda.declare_device('_numba_curand',
-                             types.uint32(curand_state_pointer))
+                             types.uint32(curand_state_pointer, types.uint64))
 
 
 # Argument handling. When a CurandStatePointer is passed into a kernel, we

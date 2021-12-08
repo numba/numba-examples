@@ -17,9 +17,10 @@ __device__ int _numba_curand_init(
     unsigned long long seed,
     unsigned long long sequence,
     unsigned long long offset,
-    curandState *state)
+    curandState *state,
+    unsigned long long index)
 {
-    curand_init(seed, sequence, offset, state);
+    curand_init(seed, sequence, offset, &state[index]);
 
     return 0;
 }
@@ -27,9 +28,10 @@ __device__ int _numba_curand_init(
 extern "C"
 __device__ unsigned int _numba_curand(
     int* numba_return_value,
-    curandState *state)
+    curandState *states,
+    unsigned long long index)
 {
-  *numba_return_value = curand(state);
+  *numba_return_value = curand(&states[index]);
 
   return 0;
 }
