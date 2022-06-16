@@ -9,6 +9,18 @@
 # Output from this example:                  0.4999931156635
 # Output from cuRAND documentation example:  0.4999931156635
 
+import sys
+
+try:
+    from cuda import cuda as cuda_driver  # noqa: F401
+    from numba import config
+    config.CUDA_USE_NVIDIA_BINDING = True
+except ImportError:
+    print("This example requires the NVIDIA CUDA Python Bindings. "
+          "Please see https://nvidia.github.io/cuda-python/install.html for "
+          "installation instructions.")
+    sys.exit(1)
+
 from numba import cuda
 from numba_curand import (curand_init, curand, curand_state_arg_handler,
                           CurandStates)
