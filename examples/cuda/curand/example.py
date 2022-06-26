@@ -8,6 +8,10 @@
 #
 # Output from this example:                  0.4999931156635
 # Output from cuRAND documentation example:  0.4999931156635
+#
+# Note that this example requires an installation of the CUDA toolkit 11.0 or
+# later, because NVRTC will use the include files from the installed CUDA
+# toolkit.
 
 import sys
 
