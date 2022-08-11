@@ -1,0 +1,21 @@
+name: Mandelbrot Set (ufunc)
+description: |
+    Compute the Mandelbrot Set, a set of points on the complex plane which always remain bounded by a threshold value while solving the quadratic recurrence equation. It is an iterative problem which is also compute intensive and visual in nature.  
+    In this benchmark we define a NumPy vectorized function (using Python which does not compile to C code) that takes a nested sequence of objects or numpy arrays as inputs and returns the computed output. It is compared with numba's capability of creating NumPy ufuncs without writing any C Code.  
+    Author - <a href="https://github.com/animator">Ankit Mahato</a>
+
+input_generator: numpy_vectorize.py:input_generator
+xlabel: Max iteration
+validator: numpy_vectorize.py:validator
+implementations:
+    - name: numpy_vectorize
+      description: numpy.vectorize() creates a vectorized function which uses broadcasting rules insted of for loops. Although users can write vectorized functions in Python, it is mostly for convenience and is neither optimal nor efficient.
+      function: numpy_vectorize.py:mandelbrot
+    - name: numba_vectorize
+      description: numba.vectorize() creates a NumPy func from a Python function as compared to writing C code if using the NumPy API. A func uses broadcasting rules insted of nested for loops.
+      function: numba_vectorize.py:mandelbrot
+    - name: parallel_numba_vectorize
+      description: numba.vectorize() also has the option to create a func which executes in parallel.
+      function: parallel_numba_vectorize.py:mandelbrot
+
+baseline: numpy_vectorize
