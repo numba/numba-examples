@@ -1,0 +1,20 @@
+name: Mandelbrot Set (NumPy)
+description: |
+    Compute the Mandelbrot Set, a set of points on the complex plane which always remain bounded by a threshold value while solving the quadratic recurrence equation. It is an iterative problem which is also compute intensive and visual in nature.  
+    Author - <a href="https://github.com/animator">Ankit Mahato</a>
+    
+input_generator: numpy_array.py:input_generator
+xlabel: Max iteration
+validator: numpy_array.py:validator
+implementations:
+    - name: numpy_array
+      description: Implementation where a 3-dimensional numpy array is used to store the computed RBG pixel values.
+      function: numpy_array.py:mandelbrot
+    - name: numba_numpy_array
+      description: numba.njit decorator is applied on the NumPy implementation.
+      function: numba_numpy_array.py:mandelbrot
+    - name: numba_prange_numpy_array
+      description: numba.njit decorator is applied on the NumPy implementation. Numpy is primarily array designed to be as fast as possible on a single core, whereas numba automatically compiles a version which can run in parallel utilizing multiple threads if it contains reduction functions, array math functions and many more functions or assignments or operations. Explicit for loop parallelization is also performed using numba.prange().
+      function: numba_prange_numpy_array.py:mandelbrot
+
+baseline: numpy_array
