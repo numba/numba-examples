@@ -1,0 +1,21 @@
+name: Mandelbrot Set (Stencil Kernel)
+description: |
+    Compute the Mandelbrot Set, a set of points on the complex plane which always remain bounded by a threshold value while solving the quadratic recurrence equation. It is an iterative problem which is also compute intensive and visual in nature.  
+    In this benchmark we learn more about Stencil kernel (both serial & parallel) implementations.  
+    Author - <a href="https://github.com/animator">Ankit Mahato</a>
+    
+input_generator: numpy_array.py:input_generator
+xlabel: Max iteration
+validator: numpy_array.py:validator
+implementations:
+    - name: numpy_array
+      description: Implementation where a 3-dimensional numpy array is used to store the computed RBG pixel values.
+      function: numpy_array.py:mandelbrot
+    - name: numba_stencil
+      description: Stencil kernel implementation.
+      function: numba_stencil.py:mandelbrot
+    - name: numba_parallel_stencil
+      description: Stencil kernel implementation with parallel execution.
+      function: numba_parallel_stencil.py:mandelbrot
+
+baseline: numpy_array

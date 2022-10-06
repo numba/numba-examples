@@ -1,0 +1,21 @@
+name: Mandelbrot Set (Pure Python)
+description: |
+    Compute the Mandelbrot Set, a set of points on the complex plane which always remain bounded by a threshold value while solving the quadratic recurrence equation. It is an iterative problem which is also compute intensive and visual in nature.  
+    In this benchmark we learn how numba can accelerate the pure python code for mandelbrot set computation.  
+    Author - <a href="https://github.com/animator">Ankit Mahato</a>
+
+input_generator: python_list.py:input_generator
+xlabel: Max iteration
+validator: python_list.py:validator
+implementations:
+    - name: python_list
+      description: Pure Python implementation where a list of list of RBG tuples is used to store the computed RBG pixel values.
+      function: python_list.py:mandelbrot
+    - name: numba_python_list
+      description: numba.njit decorator is applied on the pure Python implementation.
+      function: numba_python_list.py:mandelbrot
+    - name: numba_prange_python_list
+      description: numba.njit decorator is applied on the pure Python implementation along with explicit for loop parallelization using numba.prange().
+      function: numba_prange_python_list.py:mandelbrot
+
+baseline: python_list
