@@ -51,7 +51,7 @@ class Benchmark(object):
         self.python_file_cache = {}
 
         with open(self.benchmark_config_filename, 'r') as f:
-            config = yaml.load(f)
+            config = yaml.safe_load(f)
 
         self._validate_and_normalize_config(config, resources)
 

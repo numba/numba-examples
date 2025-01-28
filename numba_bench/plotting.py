@@ -22,7 +22,7 @@ from jinja2 import Template
 
 import mistune
 
-markdown = mistune.Markdown()
+markdown = mistune.create_markdown()
 
 if sys.version_info <= (3, 0):
     range = xrange

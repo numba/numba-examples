@@ -21,8 +21,8 @@ requirements:
     - bokeh
     - pygments
     - jinja2
-    - pyyaml
-    - mistune
+    - pyyaml >=6.0
+    - mistune >=2.0
 
 test:
   source_files:
